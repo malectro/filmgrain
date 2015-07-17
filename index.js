@@ -9,14 +9,14 @@ window.addEventListener('resize', setDimensions);
 setDimensions();
 
 var image = new Image();
-image.src = 'fez.png';
+image.src = 'beach.jpg';
 image.addEventListener('load', function () {
   drawImage(image);
   draw();
 });
 
 function draw() {
-  randomize(40);
+  randomize(80);
   window.requestAnimationFrame(draw);
 }
 
@@ -29,7 +29,7 @@ function randomize(amount) {
   for (var i = 0; i < data.length; i += 4) {
     noise = Math.floor(Math.random() * 2 * amount) - amount;
     data[i] = clamp(data[i] + noise, 0, 255);
-    data[i + 1] = clamp(data[i + 1] + noise, 0, 255);
+    //data[i + 1] = clamp(data[i + 1] + noise, 0, 255);
     data[i + 2] = clamp(data[i + 2] + noise, 0, 255);
   }
 
@@ -39,7 +39,18 @@ function randomize(amount) {
 function drawImage(image) {
   // TODO(kyle): have the image 'cover' the space and not distort
   ctx.clearRect(0, 0, HIGH, HIGH);
-  ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  var sWidth, sHeight;
+  if (image.width > image.height) {
+    sHeight = image.height;
+    sWidth = (canvas.width / canvas.height) * sHeight;
+  } else {
+    sWidth = image.width;
+    sHeight = (canvas.height / canvas.width) * sWidth;
+  }
+
+  //ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  ctx.drawImage(image, 0, 0, sWidth, sHeight, 0, 0, canvas.width, canvas.height);
   imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
