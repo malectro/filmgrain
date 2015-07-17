@@ -3,6 +3,7 @@ var HIGH = 9999999999;
 
 var canvas = document.getElementById('canvas');
 var ctx = canvas.getContext('2d');
+var imageData;
 
 window.addEventListener('resize', setDimensions);
 setDimensions();
@@ -15,13 +16,14 @@ image.addEventListener('load', function () {
 });
 
 function draw() {
-  randomize(10);
+  randomize(40);
   window.requestAnimationFrame(draw);
 }
 
 function randomize(amount) {
-  var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-  var data = imageData.data;
+  var imageData2 = new ImageData(imageData.width, imageData.height);
+  var data = imageData2.data;
+  data.set(imageData.data);
 
   var noise;
   for (var i = 0; i < data.length; i += 4) {
@@ -31,13 +33,14 @@ function randomize(amount) {
     data[i + 2] = clamp(data[i + 2] + noise, 0, 255);
   }
 
-  ctx.putImageData(imageData, 0, 0);
+  ctx.putImageData(imageData2, 0, 0);
 }
 
 function drawImage(image) {
   // TODO(kyle): have the image 'cover' the space and not distort
   ctx.clearRect(0, 0, HIGH, HIGH);
   ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+  imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
 }
 
 function setDimensions() {
